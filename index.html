@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #ccc;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+      }
+
+      button {
+        padding: 5px 10px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dynamic Table</h1>
+    <button id="addRow">Add Row</button>
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Age</th>
+          <!-- New column -->
+          <th>Location</th>
+          <!-- New column -->
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      const table = document.getElementById("dataTable");
+      let currentlyEditedRow = null;
+
+      function addRow() {
+        const newRow = table.insertRow(table.rows.length);
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+        const cell3 = newRow.insertCell(2);
+        const cell4 = newRow.insertCell(3); // New cell
+        const cell5 = newRow.insertCell(4); // New cell
+
+        cell1.contentEditable = true;
+        cell2.contentEditable = true;
+        cell3.contentEditable = true;
+        cell4.contentEditable = true; // New cell
+        cell5.innerHTML = `
+          <button class="editRow">Edit</button>
+          <button class="deleteRow">Delete</button>
+        `;
+
+        newRow.querySelector(".editRow").addEventListener("click", function () {
+          if (currentlyEditedRow === newRow) {
+            currentlyEditedRow = null;
+            this.textContent = "Edit";
+          } else {
+            // Enter edit mode
+            if (currentlyEditedRow) {
+              // Save any previously edited row
+              saveEditedRow(currentlyEditedRow);
+            }
+            currentlyEditedRow = newRow;
+            this.textContent = "Save";
+          }
+        });
+
+        newRow
+          .querySelector(".deleteRow")
+          .addEventListener("click", function () {
+            if (currentlyEditedRow === newRow) {
+              // Save the edited content before deleting
+              saveEditedRow(currentlyEditedRow);
+              currentlyEditedRow = null;
+            }
+            // Implement delete functionality here
+            alert("Deleted the row successfully.");
+            table.deleteRow(newRow.rowIndex);
+          });
+      }
+
+      function saveEditedRow(row) {
+        alert(
+          "Saved the edited content: " +
+            row.cells[0].textContent +
+            " - " +
+            row.cells[1].textContent
+        );
+      }
+
+      document.getElementById("addRow").addEventListener("click", addRow);
+
+      // Initially, add one row
+      addRow();
+    </script>
+  </body>
+</html>
